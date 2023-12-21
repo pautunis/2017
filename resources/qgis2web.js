@@ -112,7 +112,10 @@ var map = new ol.Map({
     overlays: [overlayPopup],
     layers: layersList,
     view: new ol.View({
-         maxZoom: 28, minZoom: 1
+         maxZoom: 28, minZoom: 1, projection: new ol.proj.Projection({
+            code: 'EPSG:4326',
+            extent: [-20037508.342789, -20037508.342789, 20037508.342789, 20037508.342789],
+            units: 'degrees'})
     })
 });
 
@@ -122,7 +125,20 @@ layerSwitcher.hidePanel = function() {};
 layerSwitcher.showPanel();
 
 
-map.getView().fit([1133716.709562, 4403874.143942, 1134090.289499, 4404114.801998], map.getSize());
+    var searchLayer = new SearchLayer({
+      layer: lyr_PAU_1,
+      colName: 'Name',
+      zoom: 10,
+      collapsed: true,
+      map: map
+    });
+
+    map.addControl(searchLayer);
+    document.getElementsByClassName('search-layer')[0]
+    .getElementsByTagName('button')[0].className +=
+    ' fa fa-binoculars';
+    
+map.getView().fit([9.997422, 36.680672, 10.261987, 36.922168], map.getSize());
 
 var NO_POPUP = 0
 var ALL_FIELDS = 1
@@ -163,7 +179,7 @@ var featureOverlay = new ol.layer.Vector({
 });
 
 var doHighlight = true;
-var doHover = false;
+var doHover = true;
 
 var highlight;
 var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
